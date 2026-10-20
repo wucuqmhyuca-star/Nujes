@@ -25,10 +25,18 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
       - name: Build Next.js static export
         run: npm run build
+
+      - name: Verify static export output directory
+        run: |
+          if [ ! -d "out" ] || [ -z "$(ls -A out 2>/dev/null)" ]; then
+            echo "Error: Static export directory 'out' is missing or empty!"
+            exit 1
+          fi
+          echo "Static export directory 'out' verified successfully."
 
       - name: Run Debian packaging script
         run: |
